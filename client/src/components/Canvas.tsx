@@ -1,4 +1,7 @@
 import { useEffect, useRef } from "react";
+import { socket } from "../App";
+import { relativePoint } from "../utils/relativePoint";
+import { spawnRect } from "../utils/spawnRect";
 
 import canvasClasses from "./Canvas.module.css";
 
@@ -13,8 +16,20 @@ export const Canvas = () => {
 		if (!canvas) return;
 		const ctx = canvas.getContext("2d");
 		if (!ctx) return;
-		// ctx.fillStyle = "white";
-		// ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+		const handleClick = (e: MouseEvent) => {
+			const [x, y] = relativePoint(e.clientX, e.clientY, canvas);
+			spawnRect(x, y, ctx);
+			socket.emit("spawn-object", { x, y });
+		};
+
+		socket.on("spawn-object", ({ x, y }) => spawnRect(x, y, ctx));
+		canvas.addEventListener("click", handleClick);
+
+		return () => {
+			socket.off("spawn-object");
+			canvas.removeEventListener("click", handleClick);
+		};
 	}, []);
 
 	return (

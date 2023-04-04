@@ -4,7 +4,7 @@ import { Canvas } from "./components/Canvas";
 
 import classNames from "./App.module.css";
 
-let socket = io("http://localhost:5000/");
+export let socket = io("http://localhost:5000/");
 
 function App() {
 	const [count, setCount] = useState(0);

@@ -1,0 +1,1 @@
+type Vector = [number, number];
