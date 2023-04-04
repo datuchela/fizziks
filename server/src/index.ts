@@ -10,7 +10,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
 	cors: {
-		origin: "http://127.0.0.1:5173",
+		origin: ["http://localhost:3000", "http://127.0.0.1:3000"],
 		methods: ["GET", "POST"],
 	},
 });
@@ -23,6 +23,10 @@ io.on("connection", (socket) => {
 	console.log("user connected ", socket.id);
 	socket.on("increment", (newCount: number) => {
 		socket.broadcast.emit("increment", newCount);
+	});
+
+	socket.on("spawn-object", (obj) => {
+		socket.broadcast.emit("spawn-object", obj);
 	});
 });
 
