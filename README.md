@@ -10,4 +10,4 @@ Install dependencies first in server directory, then run `npm run dev`, you can 
 
 ### Client
 
-After installing dependencies in client directory, run `npm run dev`, it should run on port **3000** or quit, you can change that in `package.json`
+After installing dependencies in client directory, run `npm run dev`, it should run on port **3000** or quit. You can change that in `package.json`
