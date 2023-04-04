@@ -11,3 +11,9 @@ Install dependencies first in server directory, then run `npm run dev`, you can 
 ### Client
 
 After installing dependencies in client directory, run `npm run dev`, it should run on port **3000** or quit. You can change that in `package.json`
+
+## To do
+
+1. - [x] Set up WebSocket connection between the server and the client.
+2. - [x] Spawn an object on canvas and send it to other clients.
+3. - [x] Implement gravity.
