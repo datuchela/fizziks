@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { Canvas } from "./components/Canvas";
 
+import classNames from "./App.module.css";
+
 let socket = io("http://localhost:5000/");
 
 function App() {
@@ -27,9 +29,11 @@ function App() {
 	}
 
 	return (
-		<div className="">
+		<div className={classNames.App}>
 			<button onClick={handleIncrement}>count is {count}</button>
-			<Canvas />
+			<main className={classNames.main}>
+				<Canvas />
+			</main>
 		</div>
 	);
 }
