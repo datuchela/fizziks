@@ -6,6 +6,7 @@ import { square } from "../utils/square";
 
 import canvasClasses from "./Canvas.module.css";
 
+// TODO: Normalize everything to one units.
 const g = 400 * 10;
 
 class Square {
