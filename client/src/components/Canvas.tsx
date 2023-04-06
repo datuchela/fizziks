@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { socket } from "../App";
+import { useObjects } from "../hooks/useObjects";
 
 import { Square } from "../objects/Square";
 import { relativePoint } from "../utils/relativePoint";
@@ -11,8 +12,9 @@ const DEFAULT_CANVAS_HEIGHT = 720;
 
 export const Canvas = () => {
 	const canvasRef = useRef<HTMLCanvasElement>(null);
-	const [objects, setObjects] = useState<Square[]>([]);
+	const [objects, setObjects] = useObjects();
 
+	// Listeners
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
@@ -21,13 +23,13 @@ export const Canvas = () => {
 
 		const handleClick = (e: MouseEvent) => {
 			const [x, y] = relativePoint(e.clientX, e.clientY, canvas);
-			const square = new Square(x, y);
+			const square = new Square({ x, y });
 			setObjects((prev) => [...prev, square]);
-			socket.emit("spawn-object", { x, y });
+			socket.emit("spawn-object", { id: square.id, x, y });
 		};
 
-		socket.on("spawn-object", ({ x, y }) => {
-			const square = new Square(x, y);
+		socket.on("spawn-object", ({ id, x, y }) => {
+			const square = new Square({ id, x, y });
 			setObjects((prev) => [...prev, square]);
 		});
 
@@ -39,6 +41,7 @@ export const Canvas = () => {
 		};
 	}, []);
 
+	// Game loop
 	useEffect(() => {
 		const canvas = canvasRef.current;
 		if (!canvas) return;
