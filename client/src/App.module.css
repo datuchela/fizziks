@@ -1,10 +1,13 @@
 .App {
 	padding: 2rem;
 	display: flex;
-	flex-direction: column;
-	align-items: start;
-	gap: 2rem;
 }
 
 .main {
+	flex: 4;
+}
+
+.aside {
+	flex: 1;
+	border: 1px solid white;
 }

@@ -3,6 +3,7 @@ import { io } from "socket.io-client";
 import { Canvas } from "./components/Canvas";
 
 import classNames from "./App.module.css";
+import { SpawnedObjects } from "./components/SpawnedObjects";
 
 export let socket = io("http://localhost:5000/");
 
@@ -29,12 +30,17 @@ function App() {
 	}
 
 	return (
-		<div className={classNames.App}>
+		<>
 			<button onClick={handleIncrement}>count is {count}</button>
-			<main className={classNames.main}>
-				<Canvas />
-			</main>
-		</div>
+			<div className={classNames.App}>
+				<main className={classNames.main}>
+					<Canvas />
+				</main>
+				<aside className={classNames.aside}>
+					<SpawnedObjects />
+				</aside>
+			</div>
+		</>
 	);
 }
 
