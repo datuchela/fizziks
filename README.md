@@ -14,6 +14,9 @@ After installing dependencies in client directory, run `npm run dev`, it should 
 
 ## To do
 
-1. - [x] Set up WebSocket connection between the server and the client.
-2. - [x] Spawn an object on canvas and send it to other clients.
-3. - [x] Implement gravity.
+1. - [x] Set up WebSocket connection between the server and the client
+2. - [x] Spawn an object on canvas and send it to other clients
+3. - [x] Implement gravity
+4. - [x] Collision with walls/floor
+5. - [x] Collision detection between objects
+6. - [ ] Collision handling between objects
