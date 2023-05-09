@@ -3,7 +3,6 @@ import { io } from "socket.io-client";
 import { Canvas } from "./components/Canvas";
 
 import classNames from "./App.module.css";
-import { SpawnedObjects } from "./components/SpawnedObjects";
 
 export let socket = io("http://localhost:5000/");
 
@@ -36,9 +35,6 @@ function App() {
 				<main className={classNames.main}>
 					<Canvas />
 				</main>
-				<aside className={classNames.aside}>
-					<SpawnedObjects />
-				</aside>
 			</div>
 		</>
 	);
