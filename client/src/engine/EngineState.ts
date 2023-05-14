@@ -3,35 +3,45 @@ import { rectIntersect } from "./utils/rectIntersect";
 
 export type EngineObject = Square;
 
+export enum StateValue {
+	paused,
+	running,
+}
+
 export interface EngineState {
 	objects: EngineObject[];
-	value: string;
+	value: StateValue;
+	canvasWidth: number;
+	canvasHeight: number;
+
 	updateObjects: (dt: number) => void;
 	drawObjects: (ctx: CanvasRenderingContext2D) => void;
 	addObject: (object: EngineObject) => void;
 	detectAndHandleCollisions: () => void;
-	detectAndHandleEdgeCollisions: (canvas: HTMLCanvasElement) => void;
+	detectAndHandleEdgeCollisions: () => void;
 }
 
 export class EngineState {
 	value;
 	objects;
 
-	constructor(objects?: EngineObject[]) {
-		this.value = "";
+	constructor(canvasWidth: number, canvasHeight: number, objects?: EngineObject[]) {
+		this.value = StateValue.running;
+		this.canvasWidth = canvasWidth;
+		this.canvasHeight = canvasHeight;
 		this.objects = objects ?? [];
 	}
 
 	updateObjects = (dt: number) => {
-		this.objects.forEach((obj) => {
-			obj.update(dt);
-		});
+		for (let i = 0; i < this.objects.length; ++i) {
+			this.objects[i].update(dt);
+		}
 	};
 
 	drawObjects = (ctx: CanvasRenderingContext2D) => {
-		this.objects.forEach((obj) => {
-			obj.draw(ctx);
-		});
+		for (let i = 0; i < this.objects.length; ++i) {
+			this.objects[i].draw(ctx);
+		}
 	};
 
 	addObject = (object: EngineObject) => {
@@ -43,13 +53,13 @@ export class EngineState {
 		let obj2;
 
 		// reset collisions
-		this.objects.forEach((obj) => {
-			obj.isColliding = false;
-		});
+		for (let i = 0; i < this.objects.length; ++i) {
+			this.objects[i].isColliding = false;
+		}
 
-		for (let i = 0; i < this.objects.length; i++) {
+		for (let i = 0; i < this.objects.length; ++i) {
 			obj1 = this.objects[i];
-			for (let j = i + 1; j < this.objects.length; j++) {
+			for (let j = i + 1; j < this.objects.length; ++j) {
 				obj2 = this.objects[j];
 				if (rectIntersect(obj1, obj2)) {
 					obj1.isColliding = true;
@@ -59,30 +69,29 @@ export class EngineState {
 		}
 	};
 
-	// passing canvas in this method, let's talk about it
-	detectAndHandleEdgeCollisions = (canvas: HTMLCanvasElement) => {
+	detectAndHandleEdgeCollisions = () => {
 		const restitution = 0.9;
 		let obj;
 
-		for (let i = 0; i < this.objects.length; i++) {
+		for (let i = 0; i < this.objects.length; ++i) {
 			obj = this.objects[i];
 
 			// Check for left and right
 			if (obj.x < obj.length) {
 				obj.vx = Math.abs(obj.vx) * restitution;
 				obj.x = obj.length;
-			} else if (obj.x > canvas.width - obj.length) {
+			} else if (obj.x > this.canvasWidth - obj.length) {
 				obj.vx = -Math.abs(obj.vx) * restitution;
-				obj.x = canvas.width - obj.length;
+				obj.x = this.canvasWidth - obj.length;
 			}
 
 			// Check for bottom and top
 			if (obj.y < obj.length) {
 				obj.vy = Math.abs(obj.vy) * restitution;
 				obj.y = obj.length;
-			} else if (obj.y > canvas.height - obj.length / 2) {
+			} else if (obj.y > this.canvasHeight - obj.length / 2) {
 				obj.vy = -Math.abs(obj.vy) * restitution;
-				obj.y = canvas.height - obj.length / 2;
+				obj.y = this.canvasHeight - obj.length / 2;
 			}
 		}
 	};
