@@ -1,13 +1,11 @@
 import { Square } from "./objects/Square";
 import { relativePoint } from "./utils/relativePoint";
-import { EngineState } from "./EngineState";
+import { EngineObject, EngineState } from "./EngineState";
 
 export type Engine = {
-	onClickCanvas: (clientX: number, clientY: number) => void;
+	onClickCanvas: (clientX: number, clientY: number) => EngineObject;
+	spawnObject: (object: EngineObject) => void;
 };
-
-const DEFAULT_CANVAS_WIDTH = 1280;
-const DEFAULT_CANVAS_HEIGHT = 720;
 
 const handleClick =
 	(canvas: HTMLCanvasElement, engineState: EngineState) =>
@@ -15,20 +13,22 @@ const handleClick =
 		const [x, y] = relativePoint(clientX, clientY, canvas);
 		const square = new Square({ x, y, mass: 50 });
 		engineState.addObject(square);
+		return square;
 	};
 
-export const init = (canvasNode: HTMLCanvasElement) => {
-	const engineState = new EngineState();
+const spawnObject = (engineState: EngineState) => (object: EngineObject) => {
+	const square = new Square({ ...object });
+	engineState.addObject(square);
+};
+
+export const init = (canvas: HTMLCanvasElement) => {
+	const ctx = canvas.getContext("2d");
+	if (!ctx) return;
+
+	const engineState = new EngineState(canvas.width, canvas.height);
 
 	let elapsed = 0;
 	let oldTimeStamp = 0;
-
-	const canvas = canvasNode;
-	const ctx = canvas?.getContext("2d");
-	if (!ctx) return;
-
-	canvas.width = DEFAULT_CANVAS_WIDTH;
-	canvas.height = DEFAULT_CANVAS_HEIGHT;
 
 	const tick = (timeStamp: number) => {
 		elapsed = (timeStamp - oldTimeStamp) / 1000;
@@ -38,7 +38,7 @@ export const init = (canvasNode: HTMLCanvasElement) => {
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 
 		engineState.detectAndHandleCollisions();
-		engineState.detectAndHandleEdgeCollisions(canvas);
+		engineState.detectAndHandleEdgeCollisions();
 
 		engineState.updateObjects(elapsed);
 		engineState.drawObjects(ctx);
@@ -50,5 +50,6 @@ export const init = (canvasNode: HTMLCanvasElement) => {
 
 	return {
 		onClickCanvas: handleClick(canvas, engineState),
+		spawnObject: spawnObject(engineState),
 	};
 };
