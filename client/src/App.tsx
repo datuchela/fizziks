@@ -11,7 +11,6 @@ function App() {
 
 	useEffect(() => {
 		socket.on("increment", (newCount: number) => {
-			console.log(newCount);
 			setCount(newCount);
 		});
 
